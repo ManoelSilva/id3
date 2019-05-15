@@ -37,8 +37,10 @@ def main():
 
     atributos_separados.remove(atributo_alvo)
 
-    uniqs = ucsv.valores_unicos(d_csv)
-    id3 = ad.montar_id3(d_csv, uniqs, atributos_separados, atributo_alvo)
+    id3Obj = ad.Id3(ucsv.valores_unicos(d_csv), atributo_alvo)
+    
+    #print('d_csv', d_csv, 'uniqs', uniqs, 'atributos_separados', atributos_separados, 'atributo_alvo', atributo_alvo)
+    id3 = id3Obj.montar_id3(d_csv, atributos_separados)
 
     exibir_id3(id3, atributo_alvo)
 

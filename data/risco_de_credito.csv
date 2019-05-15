@@ -1,7 +1,7 @@
 risco,historia_de_credito,divida,garantia,renda
 alto,ruim,alta,nenhuma,$0_a_$15mil
 alto,desconhecida,alta,nenhuma,$15_a_$35mil
-moderado,desconhecida,baixa,nenhuma,$15_a_$15mil
+moderado,desconhecida,baixa,nenhuma,$15_a_$35mil
 alto,desconhecida,baixa,nenhuma,$0_a_$15mil
 baixo,desconhecida,baixa,nenhuma,acima_de_$35mil
 baixo,desconhecida,baixa,adequada,acima_de_$35mil

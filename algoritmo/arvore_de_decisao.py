@@ -12,10 +12,13 @@ class Id3:
         self.uniqs = uniqs
         self.atributo_alvo = atributo_alvo
 
+    def get_rotulo_comum(self, rotulos):
+        rc = max(rotulos, key=lambda k: rotulos[k])
+        return rc
+
     def get_rotulos(self, d, atributo_alvo):
         linhas = d['linhas']
-        # print(atributo_alvo)
-        # input()
+
         col_idx = d['nome_p_idx'][atributo_alvo]
         rotulos = {}
 
@@ -27,7 +30,6 @@ class Id3:
                 rotulos[val] = 1
         return rotulos
 
-
     def entropia_calc(self, n, rotulos):
         ent = 0
         for label in rotulos.keys():
@@ -35,6 +37,21 @@ class Id3:
             ent += - p_x * math.log(p_x, 2)
         return ent
 
+    def media_ent_particoes(self, d, at_sep, atributo_alvo):
+        linhas = d['linhas']
+        l = len(linhas)
+        particoes = self.montar_particao(d, at_sep)
+        media_ent = 0
+
+        for cp in particoes.keys():
+            part = particoes[cp]
+            n_part = len(part['linhas'])
+            
+            rotulos_part = self.get_rotulos(part, atributo_alvo)
+            ent_part = self.entropia_calc(n_part, rotulos_part)
+            media_ent += n_part / l * ent_part
+
+        return media_ent, particoes
 
     def montar_particao(self, d, at_sep):
         particoes = {}
@@ -50,30 +67,6 @@ class Id3:
                 }
             particoes[v_linha]['linhas'].append(linha)
         return particoes
-
-
-    def media_ent_particoes(self, d, at_sep, atributo_alvo):
-        linhas = d['linhas']
-        l = len(linhas)
-        particoes = self.montar_particao(d, at_sep)
-        media_ent = 0
-
-        for cp in particoes.keys():
-            part = particoes[cp]
-            n_part = len(part['linhas'])
-            # print(atributos_sep)
-            # input()
-            rotulos_part = self.get_rotulos(part, atributo_alvo)
-            ent_part = self.entropia_calc(n_part, rotulos_part)
-            media_ent += n_part / l * ent_part
-
-        return media_ent, particoes
-
-
-    def get_rotulo_comum(self, rotulos):
-        rc = max(rotulos, key=lambda k: rotulos[k])
-        return rc
-
 
     def montar_id3(self, d, atributos_sep):
         rotulos = self.get_rotulos(d, self.atributo_alvo)
@@ -120,4 +113,4 @@ class Id3:
             partition = gim_part[atr]
             no['nos'][atr] = self.montar_id3(partition, atributos_sep_sub_arv)
 
-        return no    
+        return no

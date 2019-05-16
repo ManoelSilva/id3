@@ -7,6 +7,7 @@ class MainProgram:
     d_config = None
     atr_alvo = None
     id3 = None
+    arvore = None
     menu_actions = None
 
     def __init__(self):
@@ -19,40 +20,21 @@ class MainProgram:
         atributos_separados = set(d_csv['cabecalho'])
         atributos_separados.remove(self.atr_alvo)
         
-        id3Obj = ad.Id3(ucsv.valores_unicos(d_csv), self.atr_alvo)
-        self.id3 = id3Obj.montar_id3(d_csv, atributos_separados)
+        self.id3 = ad.Id3(ucsv.valores_unicos(d_csv), self.atr_alvo)
+        self.arvore = self.id3.montar_id3(d_csv, atributos_separados)
 
-        self.menu_actions = { 'main_menu': self.main_menu, '1': self.exibir_id3, '3': self.exit, }
+        self.menu_actions = { 'main_menu': self.main_menu, '1': self.exibir_arvore, '2': self.predicao_menu, '3': self.exit }
 
-    def exibir_id3(self):
-        p_array = []
-        set_regras = set()
-
-        def traverse(no, p_array, set_regras):
-            if 'rotulo' in no:
-                p_array.append(' o ' + self.atr_alvo + ' É ' + no['rotulo'])
-                set_regras.add(''.join(p_array))
-                p_array.pop()
-            elif 'atributo' in no:
-                strif = 'SE ' if not p_array else ' E '
-                p_array.append(strif + no['atributo'] + ' IGUAL ')
-                for n in no['nos']:
-                    p_array.append(n)
-                    traverse(no['nos'][n], p_array, set_regras)
-                    p_array.pop()
-                p_array.pop()
-
-        traverse(self.id3, p_array, set_regras)
-        print(os.linesep.join(set_regras))
-
-        pass
+    def exibir_arvore(self):
+        self.id3.exibir_id3(self.arvore, self.atr_alvo)
         self.main_menu(False)
+        return
 
     def main_menu(self, clear):
         if clear:
             os.system('clear')
         
-        print('Bem vindo,\n')
+        print('\nBem vindo,\n')
         print('Selecione a opção desejada:')
         print('1. Exibir árvore de decisão')
         print('2. Realizar predição')
@@ -61,7 +43,7 @@ class MainProgram:
         self.exec_menu(choice)
     
         return
-
+    
     def exec_menu(self, choice):
         os.system('clear')
         ch = choice.lower()
@@ -71,7 +53,6 @@ class MainProgram:
             try:
                 self.menu_actions[ch]()
             except KeyError:
-                print('Seleção inválida, por favor tente novamente.\n')
                 self.menu_actions['main_menu'](True)
         return
     
@@ -81,6 +62,24 @@ class MainProgram:
 
     def back(self):
         self.menu_actions['main_menu']()
+
+    def predicao_menu(self):
+        os.system('clear')
+        
+        print('Informe uma renda, garantia, divida e histórico de crédito, separados por vírgula ou 0 para retornar:')
+        choice = input(' >>  ')
+        ch = choice.lower()
+        
+        if ch == '' or ch == '0':
+            self.menu_actions['main_menu'](True)
+        else:
+            # try:
+            ch = ch.split(',')
+            print(self.id3.realizar_predicao(ch, self.arvore))
+            self.menu_actions['main_menu'](False)
+            # except Exception:
+                # print('Formato inválido!')
+                # self.menu_actions['2']()
 
 if __name__ == '__main__': 
     prg = MainProgram()

@@ -114,3 +114,67 @@ class Id3:
             no['nos'][atr] = self.montar_id3(partition, atributos_sep_sub_arv)
 
         return no
+    
+    def exibir_id3(self, arvore, atr_alvo):
+        p_array = []
+        set_regras = set()
+
+        def traverse(no, p_array, set_regras):
+            if 'rotulo' in no:
+                p_array.append(' o ' + atr_alvo + ' É ' + no['rotulo'])
+                set_regras.add(''.join(p_array))
+                p_array.pop()
+            elif 'atributo' in no:
+                strif = 'SE ' if not p_array else ' E '
+                p_array.append(strif + no['atributo'] + ' IGUAL ')
+                for n in no['nos']:
+                    p_array.append(n)
+                    traverse(no['nos'][n], p_array, set_regras)
+                    p_array.pop()
+                p_array.pop()
+
+        traverse(arvore, p_array, set_regras)
+        print(os.linesep.join(set_regras))
+
+        pass
+    
+    def realizar_predicao(self, inputs, id3):
+        predicao = ''
+        renda = self.getRenda(int(inputs[0]))
+        garantia = inputs[1]
+        divida = inputs[2]
+        historiaCredito = inputs[3]
+
+        # for n in id3['nos']:
+        #     if n == renda:
+        #         predicao += 'SE a renda for ' + renda
+        #         if 'atributo' in id3['nos'][n]:
+        #             predica += ' teste '
+
+        for n in id3['nos']:
+            if n == renda:
+                predicao += 'SE a renda for ' + renda
+                if 'atributo' in id3['nos'][n]:
+                    for i in id3['nos'][n]['nos']:
+                        if i == historiaCredito:
+                            predicao += ' e a HISTORIA DE CREDITO for ' + historiaCredito
+                        if 'atributo' in id3['nos'][n]['nos'][i]:
+                            for j in id3['nos'][n]['nos'][i]['nos']:
+                                if i == divida:
+                                    predicao += ' e a DIVIDA for ' + divida + ' o RISCO é ' + j
+                        else:
+                            predicao += ' o RISCO é ' + id3['nos'][n]['nos'][historiaCredito]['rotulo']
+                            break
+                else:
+                    predicao += ' o RISCO é ' + id3['nos'][n]['rotulo'] 
+        return predicao
+
+    def getRenda(self, renda):
+        if renda > 35000:
+            renda = 'acima_de_$35mil'
+        elif renda < 35000 and renda > 15000:
+            renda = '$15_a_$35mil'
+        else:
+            renda = '$0_a_$15mil'
+
+        return renda

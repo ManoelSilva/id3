@@ -145,12 +145,6 @@ class Id3:
         divida = inputs[2]
         historiaCredito = inputs[3]
 
-        # for n in id3['nos']:
-        #     if n == renda:
-        #         predicao += 'SE a renda for ' + renda
-        #         if 'atributo' in id3['nos'][n]:
-        #             predica += ' teste '
-
         for n in id3['nos']:
             if n == renda:
                 predicao += 'SE a renda for ' + renda

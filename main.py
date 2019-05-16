@@ -73,13 +73,13 @@ class MainProgram:
         if ch == '' or ch == '0':
             self.menu_actions['main_menu'](True)
         else:
-            # try:
-            ch = ch.split(',')
-            print(self.id3.realizar_predicao(ch, self.arvore))
-            self.menu_actions['main_menu'](False)
-            # except Exception:
-                # print('Formato inválido!')
-                # self.menu_actions['2']()
+            try:
+                ch = ch.split(',')
+                print(self.id3.realizar_predicao(ch, self.arvore))
+                self.menu_actions['main_menu'](False)
+            except Exception:
+                print('Formato inválido!')
+                self.menu_actions['2']()
 
 if __name__ == '__main__': 
     prg = MainProgram()

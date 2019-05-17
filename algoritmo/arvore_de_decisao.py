@@ -166,7 +166,7 @@ class Id3:
     def get_renda(self, renda):
         if renda > 35000:
             renda = 'acima_de_$35mil'
-        elif renda < 35000 and renda > 15000:
+        elif renda <= 35000 and renda >= 15000:
             renda = '$15_a_$35mil'
         else:
             renda = '$0_a_$15mil'

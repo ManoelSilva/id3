@@ -140,7 +140,7 @@ class Id3:
     
     def realizar_predicao(self, inputs, id3):
         predicao = ''
-        renda = self.getRenda(int(inputs[0]))
+        renda = self.get_renda(int(inputs[0]))
         garantia = inputs[1]
         divida = inputs[2]
         historiaCredito = inputs[3]
@@ -149,21 +149,21 @@ class Id3:
             if n == renda:
                 predicao += 'SE a renda for ' + renda
                 if 'atributo' in id3['nos'][n]:
+                    predicao += ' e a HISTORIA DE CREDITO for ' + historiaCredito
                     for i in id3['nos'][n]['nos']:
                         if i == historiaCredito:
-                            predicao += ' e a HISTORIA DE CREDITO for ' + historiaCredito
-                        if 'atributo' in id3['nos'][n]['nos'][i]:
-                            for j in id3['nos'][n]['nos'][i]['nos']:
-                                if i == divida:
-                                    predicao += ' e a DIVIDA for ' + divida + ' o RISCO é ' + j
-                        else:
-                            predicao += ' o RISCO é ' + id3['nos'][n]['nos'][historiaCredito]['rotulo']
-                            break
+                            if 'atributo' in id3['nos'][n]['nos'][i]:
+                                for j in id3['nos'][n]['nos'][i]['nos']:
+                                    predicao += ' o RISCO é ' + id3['nos'][n]['nos'][i]['nos'][j]['rotulo']
+                                    break
+                            else:
+                                predicao += ' o RISCO é ' + id3['nos'][n]['nos'][historiaCredito]['rotulo']
+                                break
                 else:
                     predicao += ' o RISCO é ' + id3['nos'][n]['rotulo'] 
         return predicao
 
-    def getRenda(self, renda):
+    def get_renda(self, renda):
         if renda > 35000:
             renda = 'acima_de_$35mil'
         elif renda < 35000 and renda > 15000:
